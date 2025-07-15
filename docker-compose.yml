@@ -1,0 +1,169 @@
+version: "3.9"
+services:
+
+  jupyter:
+    image: jupyter/datascience-notebook:x86_64-ubuntu-22.04
+    # image: asami76/allspark:latest
+    container_name: jupyter
+    hostname: jupyter
+    user: root
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      # Persist JupyterLab extensions
+      # Persist classic notebook extensions
+      - /home/ysf/jupyter_PD/jupyter_labextensions:/usr/local/share/jupyter/labextensions/
+      - /home/ysf/jupyter_PD/jupyter_nbextensions:/usr/local/share/jupyter/nbextensions/
+
+      # Persist user config files (kernels, tokens, UI prefs)
+      # Persist data like runtime, logs, etc.
+      - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
+      - /home/ysf/jupyter_PD/jupyter_data:/home/jovyan/.local/share/jupyter/
+    networks:
+      - my-net
+    environment:
+      JUPYTER_ENABLE_LAB: "yes"
+      NB_UID: 1000
+      NB_GID: 1000
+      GRANT_SUDO: "yes"
+      JUPYTER_TOKEN: "mytoken"
+
+    command: start-notebook.sh
+    restart: unless-stopped
+
+  jupyter-tf:
+    image: jupyter/tensorflow-notebook:latest
+    container_name: jupyter-tf
+    ports:
+      - "8889:8888"  # map host 8889 to container 8888
+    volumes:
+      - ./notebooks:/home/jovyan/work
+      - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
+    working_dir: /home/jovyan/work
+    environment:
+      - GRANT_SUDO=yes
+      - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=mytoken
+    restart: unless-stopped
+    networks:
+      - my-net
+
+  pg-db:
+    image: postgres
+    container_name: pg-db
+    hostname: pg-db
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: P@ssw0rd
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    networks:
+      - my-net
+
+
+
+  adminer:
+    image: adminer
+    hostname: pg-adminer
+    container_name: pg-adminer
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - 8080:8080
+    depends_on:
+      - pg-db
+
+  pgadmin:
+    image: dpage/pgadmin4
+    hostname: pgadmin
+    container_name: pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: "ysf@gmail.com"
+      PGADMIN_DEFAULT_PASSWORD: "P@ssw0rd"
+    volumes:
+      - ./pg_data:/var/lib/postgresql/data
+    restart: always
+    ports:
+      - "5050:80"
+    depends_on:
+      - pg-db
+
+  mysql-db:
+    image: mysql:oraclelinux9
+    container_name: mysql-db
+    hostname: mysql-db
+    restart: always
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - my-net
+    ports:
+      - 3306:3306
+      - 33060:33060
+    environment:
+      MYSQL_ROOT_PASSWORD: "P@ssw0rd"
+
+
+  mysql-workbench:
+    image: linuxserver/mysql-workbench:latest
+    container_name: mysql-workbench
+    hostname: mysql-workbench
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Africa/Cairo
+    volumes:
+      # - ./mysql_data:/var/lib/mysql
+      - ./mysql-scripts:/scripts
+      - ./workbench-config:/config
+    networks:
+      - my-net
+    ports:
+      - 3000:3000
+    depends_on:
+      - mysql-db
+    cap_add:
+      - IPC_LOCK
+    restart: unless-stopped
+
+
+  code-server:
+    image: codercom/code-server:latest
+    container_name: vscode-ds
+    hostname: vscode-ds
+    ports:
+      - "8443:8080"
+    volumes:
+      - .:/home/coder
+      - /home/ysf/.config/Code/User:/home/coder/.local/share/code-server/User
+      - /home/ysf/.vscode/extensions:/home/coder/.local/share/code-server/extensions
+    networks:
+      - my-net
+    environment:
+      - PASSWORD=yourpassword
+    restart: unless-stopped
+
+networks:
+  my-net:
+    driver: bridge
+
+  # dind:
+  #   image: docker:dind
+  #   container_name: docker-in-docker
+  #   hostname: docker-in-docker
+  #   privileged: true
+  #   volumes:
+  #     - dind_data:/var/lib/docker
+  #     - /var/run/docker.sock:/var/run/docker.sock
+
+
+
+
+# volumes:
+#   pg_data:
+#   dind_data:
+#   mysql_data:
+
+

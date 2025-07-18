@@ -1,0 +1,72 @@
+{
+  "editor.fontFamily": "Fira Code,Amiri, Hack, JetBrains Mono, Consolas, 'Courier New', monospace",
+  "editor.fontSize": 18,
+  "editor.fontLigatures": true,
+  "editor.cursorStyle": "line",
+  "editor.cursorBlinking": "phase",
+  "editor.cursorSmoothCaretAnimation": "on",
+  "editor.minimap.enabled": false,
+  "editor.smoothScrolling": true,
+  "editor.roundedSelection": true,
+  "editor.scrollBeyondLastLine": true,
+  "editor.formatOnSave": true,
+  "editor.formatOnPaste": true,
+  "editor.formatOnType": true,
+  "editor.suggestSelection": "first",
+  "editor.snippetSuggestions": "top",
+  "editor.quickSuggestionsDelay": 50,
+  "editor.tabCompletion": "on",
+  "editor.stickyScroll.enabled": false,
+  "editor.scrollbar.verticalScrollbarSize": 8,
+  "editor.letterSpacing": 1,
+  "editor.renderWhitespace": "all",
+  "editor.renderControlCharacters": true,
+  "editor.wordWrap": "on",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "explicit"
+  },
+  "terminal.integrated.fontFamily": "Fira Code,Amiri,monospace",
+  "terminal.integrated.fontSize": 17,
+  "terminal.integrated.letterSpacing": 1,
+  "terminal.integrated.cursorStyle": "underline",
+  "terminal.integrated.cursorBlinking": true,
+  "terminal.integrated.scrollback": 10000,
+  "terminal.integrated.focusAfterRun": "terminal",
+  "terminal.integrated.tabs.enabled": false,
+  "terminal.integrated.smoothScrolling": true,
+  "terminal.integrated.enableMultiLinePasteWarning": "never",
+  "terminal.integrated.stickyScroll.enabled": false,
+
+  "files.trimTrailingWhitespace": true,
+  "files.insertFinalNewline": true,
+  "breadcrumbs.enabled": true,
+  "files.autoSave": "afterDelay",
+  "python.autoComplete.extraPaths": [],
+  "typescript.suggest.completeFunctionCalls": true,
+  "javascript.suggest.completeFunctionCalls": true,
+  "database-client.autoSync": true,
+  "vs-kubernetes": {
+    "vscode-kubernetes.kubectl-path-linux": "/home/ysf/.local/state/vs-kubernetes/tools/kubectl/kubectl",
+    "vscode-kubernetes.helm-path-linux": "/home/ysf/.local/state/vs-kubernetes/tools/helm/linux-amd64/helm",
+    "vscode-kubernetes.minikube-path-linux": "/home/ysf/.local/state/vs-kubernetes/tools/minikube/linux-amd64/minikube"
+  },
+  "explorer.confirmPasteNative": false,
+  "explorer.confirmDelete": false,
+  "explorer.confirmDragAndDrop": false,
+  "security.workspace.trust.enabled": false,
+  "notebook.lineNumbers": "on",
+  "[jsonc]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "window.zoomLevel": 1,
+  "workbench.panel.showLabels": false,
+  "workbench.iconTheme": "material-icon-theme",
+  "workbench.colorTheme": "GitHub Dark Palenight Operator"
+  // "workbench.preferredDarkColorTheme": "GitHub Dark Palenight",
+  // "workbench.startupEditor": "none",
+  // "workbench.editor.enablePreview": false,
+  // "markdown.extension.print.theme": "dark",
+}
+
+
+

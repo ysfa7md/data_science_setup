@@ -61,7 +61,8 @@
   "window.zoomLevel": 1,
   "workbench.panel.showLabels": false,
   "workbench.iconTheme": "material-icon-theme",
-  "workbench.colorTheme": "GitHub Dark Palenight Operator"
+  "workbench.colorTheme": "GitHub Dark Default"
+
   // "workbench.preferredDarkColorTheme": "GitHub Dark Palenight",
   // "workbench.startupEditor": "none",
   // "workbench.editor.enablePreview": false,

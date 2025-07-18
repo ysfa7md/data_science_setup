@@ -1,6 +1,24 @@
 version: "3.9"
 services:
 
+
+  code-server:
+    image: codercom/code-server:latest
+    container_name: vscode-ds
+    hostname: vscode-ds
+    ports:
+      - "8443:8080"
+    volumes:
+      - .:/home/coder
+      - /home/ysf/.config/Code/User:/home/coder/.local/share/code-server/User
+      - /home/ysf/.vscode/extensions:/home/coder/.local/share/code-server/extensions
+    networks:
+      - my-net
+    environment:
+      - PASSWORD=P@ssword
+    restart: unless-stopped
+
+
   jupyter:
     image: jupyter/datascience-notebook:x86_64-ubuntu-22.04
     # image: asami76/allspark:latest
@@ -11,13 +29,9 @@ services:
       - "8888:8888"
     volumes:
       - ./notebooks:/home/jovyan/work
-      # Persist JupyterLab extensions
-      # Persist classic notebook extensions
+
       - /home/ysf/jupyter_PD/jupyter_labextensions:/usr/local/share/jupyter/labextensions/
       - /home/ysf/jupyter_PD/jupyter_nbextensions:/usr/local/share/jupyter/nbextensions/
-
-      # Persist user config files (kernels, tokens, UI prefs)
-      # Persist data like runtime, logs, etc.
       - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
       - /home/ysf/jupyter_PD/jupyter_data:/home/jovyan/.local/share/jupyter/
     networks:
@@ -36,7 +50,7 @@ services:
     image: jupyter/tensorflow-notebook:latest
     container_name: jupyter-tf
     ports:
-      - "8889:8888"  # map host 8889 to container 8888
+      - "8889:8888" 
     volumes:
       - ./notebooks:/home/jovyan/work
       - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
@@ -49,31 +63,62 @@ services:
     networks:
       - my-net
 
+
+  # tensorflow:
+  #   image: tensorflow/tensorflow:nightly-jupyter
+  #   container_name: tf-lab
+  #   hostname: tf-lab
+  #   ports:
+  #     - "8890:8890"
+  #   volumes:
+  #     - ./workspace:/tf/notebooks
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   restart: unless-stopped
+  #   networks:
+  #     - my-net
+
+  # pytorch:
+  #   image: pytorch/pytorch:2.7.1-cuda11.8-cudnn9-runtime
+  #   # image: pytorch/pytorch:latest
+  #   container_name: torch-lab
+  #   hostname: torch-lab
+  #   command: >
+  #     bash -c "pip install jupyterlab && jupyter lab --ip=0.0.0.0 --port=8890 --no-browser --allow-root"
+  #   ports:
+  #     - "8890:8890"
+  #   volumes:
+  #     - ./workspace:/workspace
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - capabilities: [gpu]
+  #   environment:
+  #     - NVIDIA_VISIBLE_DEVICES=all
+  #   restart: unless-stopped
+  #   networks:
+  #     - my-net
+
+
   pg-db:
     image: postgres
     container_name: pg-db
     hostname: pg-db
     restart: always
+    ports:
+      - "5432:5432"
     environment:
       POSTGRES_PASSWORD: P@ssw0rd
     volumes:
       - ./pg_data:/var/lib/postgresql/data
     networks:
       - my-net
-
-
-
-  adminer:
-    image: adminer
-    hostname: pg-adminer
-    container_name: pg-adminer
-    volumes:
-      - ./pg_data:/var/lib/postgresql/data
-    restart: always
-    ports:
-      - 8080:8080
-    depends_on:
-      - pg-db
 
   pgadmin:
     image: dpage/pgadmin4
@@ -89,6 +134,8 @@ services:
       - "5050:80"
     depends_on:
       - pg-db
+    networks:
+      - my-net
 
   mysql-db:
     image: mysql:oraclelinux9
@@ -129,25 +176,10 @@ services:
     restart: unless-stopped
 
 
-  code-server:
-    image: codercom/code-server:latest
-    container_name: vscode-ds
-    hostname: vscode-ds
-    ports:
-      - "8443:8080"
-    volumes:
-      - .:/home/coder
-      - /home/ysf/.config/Code/User:/home/coder/.local/share/code-server/User
-      - /home/ysf/.vscode/extensions:/home/coder/.local/share/code-server/extensions
-    networks:
-      - my-net
-    environment:
-      - PASSWORD=yourpassword
-    restart: unless-stopped
-
 networks:
   my-net:
     driver: bridge
+
 
   # dind:
   #   image: docker:dind
@@ -157,13 +189,5 @@ networks:
   #   volumes:
   #     - dind_data:/var/lib/docker
   #     - /var/run/docker.sock:/var/run/docker.sock
-
-
-
-
-# volumes:
-#   pg_data:
-#   dind_data:
-#   mysql_data:
 
 

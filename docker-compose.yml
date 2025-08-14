@@ -15,7 +15,7 @@ services:
     networks:
       - my-net
     environment:
-      - PASSWORD=P@ssword
+      - PASSWORD=yourpassword
     restart: unless-stopped
 
 
@@ -29,9 +29,14 @@ services:
       - "8888:8888"
     volumes:
       - ./notebooks:/home/jovyan/work
-
-      - /home/ysf/jupyter_PD/jupyter_labextensions:/usr/local/share/jupyter/labextensions/
+      # Persist JupyterLab extensions
+      # Persist classic notebook extensions
+      # - /home/ysf/jupyter_PD/jupyter_labextensions:/usr/local/share/jupyter/labextensions/
       - /home/ysf/jupyter_PD/jupyter_nbextensions:/usr/local/share/jupyter/nbextensions/
+      # - /home/ysf/jupyter_PD/kagglehub:/home/jovyan/.cache/kagglehub/
+      # - /home/ysf/jupyter_PD/packages:/opt/conda/lib/python3.11/site-packages/
+      # Persist user config files (kernels, tokens, UI prefs)
+      # Persist data like runtime, logs, etc.
       - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
       - /home/ysf/jupyter_PD/jupyter_data:/home/jovyan/.local/share/jupyter/
     networks:
@@ -50,7 +55,7 @@ services:
     image: jupyter/tensorflow-notebook:latest
     container_name: jupyter-tf
     ports:
-      - "8889:8888" 
+      - "8889:8888"  # map host 8889 to container 8888
     volumes:
       - ./notebooks:/home/jovyan/work
       - /home/ysf/jupyter_PD/jupyter_config:/home/jovyan/.jupyter/
@@ -137,43 +142,43 @@ services:
     networks:
       - my-net
 
-  mysql-db:
-    image: mysql:oraclelinux9
-    container_name: mysql-db
-    hostname: mysql-db
-    restart: always
-    volumes:
-      - ./mysql_data:/var/lib/mysql
-    networks:
-      - my-net
-    ports:
-      - 3306:3306
-      - 33060:33060
-    environment:
-      MYSQL_ROOT_PASSWORD: "P@ssw0rd"
+  # mysql-db:
+  #   image: mysql:oraclelinux9
+  #   container_name: mysql-db
+  #   hostname: mysql-db
+  #   restart: always
+  #   volumes:
+  #     - ./mysql_data:/var/lib/mysql
+  #   networks:
+  #     - my-net
+  #   ports:
+  #     - 3306:3306
+  #     - 33060:33060
+  #   environment:
+  #     MYSQL_ROOT_PASSWORD: "P@ssw0rd"
 
 
-  mysql-workbench:
-    image: linuxserver/mysql-workbench:latest
-    container_name: mysql-workbench
-    hostname: mysql-workbench
-    environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Africa/Cairo
-    volumes:
-      # - ./mysql_data:/var/lib/mysql
-      - ./mysql-scripts:/scripts
-      - ./workbench-config:/config
-    networks:
-      - my-net
-    ports:
-      - 3000:3000
-    depends_on:
-      - mysql-db
-    cap_add:
-      - IPC_LOCK
-    restart: unless-stopped
+  # mysql-workbench:
+  #   image: linuxserver/mysql-workbench:latest
+  #   container_name: mysql-workbench
+  #   hostname: mysql-workbench
+  #   environment:
+  #     - PUID=1000
+  #     - PGID=1000
+  #     - TZ=Africa/Cairo
+  #   volumes:
+  #     # - ./mysql_data:/var/lib/mysql
+  #     - ./mysql-scripts:/scripts
+  #     - ./workbench-config:/config
+  #   networks:
+  #     - my-net
+  #   ports:
+  #     - 3000:3000
+  #   depends_on:
+  #     - mysql-db
+  #   cap_add:
+  #     - IPC_LOCK
+  #   restart: unless-stopped
 
 
 networks:
@@ -189,5 +194,10 @@ networks:
   #   volumes:
   #     - dind_data:/var/lib/docker
   #     - /var/run/docker.sock:/var/run/docker.sock
+
+# volumes:
+#   pg_data:
+#   dind_data:
+#   mysql_data:
 
 
